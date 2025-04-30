@@ -1,36 +1,55 @@
 package ar.edu.unlam.herencia;
 
+import static org.junit.Assert.*;
+import org.junit.Test;
+
 public class test {
 
-	public static void main(String[] args) {
-		Bicicleta bici = new Bicicleta();
-		Automovil auto = new Automovil();
-		Camion camion = new Camion();
-		Destino destino1 = new Destino("San Justo", "Siempreviva 548");
-		Destino destino2 = new Destino("Lanus", "colibri 143");
-		Destino destino3 = new Destino("Pompeya", "Saenz 123");
-		Destino destino4 = new Destino("Moron", "Rivadavia 12300");
+    @Test
+    public void testBicicletaConUnSoloDestino() {
+        Bicicleta bici = new Bicicleta();
+        Destino d1 = new Destino("Lanús");
+        Destino d2 = new Destino("Avellaneda");
 
-		Vehiculo vehiculos[] = { bici, auto, camion };
+        Paquete p1 = new Paquete(0.5, 0.5, 0.5, 5, d1); 
+        Paquete p2 = new Paquete(0.5, 0.5, 0.5, 5, d1);
+        Paquete p3 = new Paquete(0.5, 0.5, 0.5, 5, d2);
 
-		Paquete paquete1 = new Paquete(0.1, 0.1, 0.1, 5.0, destino1);
-		Paquete paquete5 = new Paquete(0.1, 0.1, 0.1, 5.0);
-		Paquete paquete2 = new Paquete(1.0, 1.0, 1.0, 10.0, destino2);
-		Paquete paquete3 = new Paquete(2.0, 2.0, 2.0, 10.0, destino3);
-		Paquete paquete4 = new Paquete(0.1, 0.1, 0.1, 5.0, destino4);
-		Paquete[] paquetes = { paquete1, paquete5, paquete2, paquete3, paquete4 };
+        assertTrue(bici.agregarPaquete(p1));
+        assertTrue(bici.agregarPaquete(p2));
+        assertFalse(bici.agregarPaquete(p3));
+    }
 
-		for (Vehiculo vehiculo : vehiculos) {
-			for (int i = 0; i < paquetes.length; i++) {
-				if (paquetes[i] != null) {
-					if (vehiculo.agregarPaquete(paquetes[i])) {
-						System.out.println(vehiculo.toString() + vehiculo.getDestinos());
-						paquetes[i] = null;
-					}
-				}
-			}
-		}
+    @Test
+    public void testAutomovilConTresDestinos() {
+        Automovil auto = new Automovil();
+        Destino d1 = new Destino("Lanús");
+        Destino d2 = new Destino("Avellaneda");
+        Destino d3 = new Destino("Quilmes");
+        Destino d4 = new Destino("Lomas");
 
-	}
+        Paquete p1 = new Paquete(1, 1, 1, 100, d1); // 1 m3
+        Paquete p2 = new Paquete(0.5, 1, 1, 100, d2); // 0.5 m3
+        Paquete p3 = new Paquete(0.5, 0.5, 1, 100, d3); // 0.25 m3
+        Paquete p4 = new Paquete(0.5, 0.5, 0.5, 50, d4); // 0.125 m3
 
+        assertTrue(auto.agregarPaquete(p1));
+        assertTrue(auto.agregarPaquete(p2));
+        assertTrue(auto.agregarPaquete(p3));
+        assertFalse(auto.agregarPaquete(p4));
+    }
+
+    @Test
+    public void testCamionConMuchosPaquetes() {
+        Camion camion = new Camion();
+        Destino d1 = new Destino("CABA");
+
+        for (int i = 0; i < 50; i++) {
+            Paquete p = new Paquete(0.5, 0.5, 0.5, 100, d1); // 0.125 m3
+            camion.agregarPaquete(p);
+        }
+
+        assertTrue(camion.getVolumenOcupado() <= 20);
+        assertTrue(camion.getPesoOcupado() <= 16000);
+    }
 }

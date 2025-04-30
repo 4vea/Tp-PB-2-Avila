@@ -1,32 +1,31 @@
 package ar.edu.unlam.herencia;
-import java.util.Arrays;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class Vehiculo {
-	protected Double limiteVolumen;
-	protected Double limiteCapacidadKg;
-	protected Integer cantidadDestinos;
-	protected Paquete[] cantidadDePaquetes;
+    protected List<Paquete> paquetes = new ArrayList<>();
+    protected double volumenMaximo;
+    protected double pesoMaximo;
 
-	abstract protected Boolean puedeTransportar(Paquete paquete);
+    public boolean puedeAgregarPaquete(Paquete p) {
+        return (getVolumenOcupado() + p.getVolumen() <= volumenMaximo) &&
+               (getPesoOcupado() + p.getPeso() <= pesoMaximo);
+    }
 
-	abstract public Boolean agregarPaquete(Paquete paquete);
+    public boolean agregarPaquete(Paquete p) {
+        if (puedeAgregarPaquete(p)) {
+            paquetes.add(p);
+            return true;
+        }
+        return false;
+    }
 
-	public String getDestinos() {
-	    String resultado = "";
-	    for (Paquete p : cantidadDePaquetes) {
-	        if (p != null) {
-	            resultado += " \n" + p.getDestino().getCiudad() + " - " + p.getDestino().getDireccion() + "\n";
-	        }
-	    }
-	    return resultado;
-	}
-	
-	protected Boolean calcularPesoDePaquetes() {
-		if (cantidadDePaquetes[0] != null && cantidadDePaquetes[1] != null) {
-			if (cantidadDePaquetes[0].getPeso() + cantidadDePaquetes[1].getPeso() > limiteCapacidadKg) {
-				return false;
-			}
-		}
-		return true;
-	}
+    public double getVolumenOcupado() {
+        return paquetes.stream().mapToDouble(Paquete::getVolumen).sum();
+    }
+
+    public double getPesoOcupado() {
+        return paquetes.stream().mapToDouble(Paquete::getPeso).sum();
+    }
 }
